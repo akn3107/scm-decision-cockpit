@@ -180,8 +180,6 @@ def show_landing_page():
     with col2:
         st.subheader("Connect with Me")
         st.markdown("""
-        Built by **Ankit Nanda**.
-        
         - [Substack: Supply Chain Insider](https://substack.com/@ankitnanda)
         - [LinkedIn Profile](https://www.linkedin.com/in/ankitnanda/)
         """)
@@ -245,8 +243,6 @@ def show_about():
     - **python-pptx** - PowerPoint export
     
     ## 📞 Contact
-    
-    Built by **Ankit Nanda** - Supply Chain Professional
     
     - [Substack: Supply Chain Insider](https://substack.com/@ankitnanda)
     - [LinkedIn](https://www.linkedin.com/in/ankitnanda/)
