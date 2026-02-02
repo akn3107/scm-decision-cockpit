@@ -1,5 +1,6 @@
 __pycache__/
 *.xlsx
+!control_tower_input_with_help.xlsx
 .pytest_cache/
 venv/
 *.pyc
