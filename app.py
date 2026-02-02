@@ -80,7 +80,7 @@ def show_landing_page():
         st.markdown("""
         1. **Download the Template**: Get the required Excel format below.
         2. **Fill Your Data**: Enter Inventory, Demand, and Supply data.
-        3. **Upload**: Go to the 'Cockpit' page and upload your file.
+        3. **Upload**: Go to the 'Tool' page and upload your file.
         4. **Analyze**: View Risk calculations and actionable recommendations.
         """)
         
@@ -98,8 +98,8 @@ def show_landing_page():
             st.warning("Template file not found. Please run make_template.py")
 
         st.write("") # Spacer
-        if st.button("🚀 Launch Cockpit", type="primary"):
-            st.session_state.page = "Cockpit"
+        if st.button("🚀 Launch Tool", type="primary"):
+            st.session_state.page = "Tool"
             st.rerun()
 
     with col2:
@@ -218,7 +218,7 @@ def main():
 
     selection = st.sidebar.radio(
         "Go to", 
-        ["Home", "Cockpit"], 
+        ["Home", "Tool"], 
         key="nav_radio",
         index=0 if st.session_state.page == "Home" else 1,
         on_change=on_change
@@ -226,7 +226,7 @@ def main():
 
     if st.session_state.page == "Home":
         show_landing_page()
-    elif st.session_state.page == "Cockpit":
+    elif st.session_state.page == "Tool":
         show_cockpit()
 
 if __name__ == "__main__":
