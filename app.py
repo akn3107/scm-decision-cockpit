@@ -254,7 +254,7 @@ def show_about():
     
     ---
     
-    **Open Source | MIT License | Built with ❤️ for supply chain professionals**
+    **Open Source | MIT License**
     """)
 
 def show_cockpit():
