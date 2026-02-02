@@ -176,4 +176,3 @@ Supply Chain Professional | Data-Driven Decision Making
 
 ---
 
-**Built with ❤️ for supply chain professionals who value transparency over complexity.**
