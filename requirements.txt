@@ -4,3 +4,4 @@ numpy>=1.26
 openpyxl>=3.1
 pytest>=7.0
 hypothesis>=6.0
+python-pptx>=0.6.21
