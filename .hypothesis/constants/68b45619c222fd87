@@ -1,0 +1,4 @@
+# file: C:\My Projects\SCM Decision Cockpit\kpi_engine.py
+# hypothesis_version: 6.151.4
+
+[0.0, 1.0, 'D', 'NAI', 'POH', '_k', 'as_of_date', 'coerce', 'fill_rate', 'first_stockout_week', 'forecast_qty', 'left', 'location', 'max', 'min', 'min_nai', 'min_poh', 'on_hand_qty', 'safety_breach_flag', 'safety_stock_qty', 'served_qty', 'sku', 'ss_breach', 'stockout', 'stockout_flag', 'sum', 'supply_qty', 'total_demand', 'total_served', 'unmet_qty', 'week_start']

@@ -68,7 +68,8 @@ def test_scenario_delay():
     w1 = date(2026,1,19)
     w2 = date(2026,1,26)
     inv = pd.DataFrame([{"as_of_date": date(2026,1,1), "sku": "A", "location": "L", "on_hand_qty": 0, "safety_stock_qty": 0}])
-    dem = pd.DataFrame([])
+    # Anchor demand at w1 so grid starts there, even if supply shifts to w2
+    dem = pd.DataFrame([{"week_start": w1, "sku": "A", "location": "L", "forecast_qty": 0}])
     sup = pd.DataFrame([{"week_start": w1, "sku": "A", "location": "L", "supply_qty": 50}])
     
     summ, det = compute_kpis(inv, dem, sup, supply_delay_weeks=1, horizon_weeks=2)

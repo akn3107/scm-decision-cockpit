@@ -68,12 +68,15 @@ def compute_kpis(
     starts = []
     if not d_df.empty: starts.append(d_df["week_start"].min())
     if not s_df.empty: starts.append(s_df["week_start"].min())
-    if not inv.empty: starts.append(inv["as_of_date"].min())
     
     if starts:
         start_week = min(starts)
     else:
         start_week = datetime.date.today()
+    
+    # Normalize to Monday (0)
+    # If using ISO weeks, we want the Monday of that week.
+    start_week = start_week - datetime.timedelta(days=start_week.weekday())
 
     weeks = [start_week + datetime.timedelta(days=7*i) for i in range(horizon_weeks)]
     weeks_df = pd.DataFrame({"week_start": weeks})
