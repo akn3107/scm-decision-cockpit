@@ -71,7 +71,7 @@ def show_landing_page():
     if os.path.exists("assets/header.jpg"):
         st.image("assets/header.jpg", use_container_width=True)
     
-    st.title("Supply Chain Decision Cockpit")
+    st.title("Supply Chain Decision Tool")
     
     col1, col2 = st.columns([2, 1])
     
