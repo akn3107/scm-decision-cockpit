@@ -5,10 +5,10 @@ from openpyxl.styles import Font
 from datetime import date, timedelta
 
 # Output filename
-OUTPUT_FILE = "control_tower_input.xlsx"
+OUTPUT_FILE = "control_tower_input_with_help.xlsx"
 
 # ---------------------------------------------------------
-# 1. Define Schematic Data (Classes / Dictionaries)
+# 1. Define Schematic Data
 # ---------------------------------------------------------
 
 # Horizon setup
@@ -26,81 +26,65 @@ master_data = [
 
 # Inventory Sanpshot (as of START_DATE)
 inventory_data = [
-    # Paracetamol: Healthy stock
     {"as_of_date": START_DATE, "sku": "PARACET500_TAB", "location": "BHI_DC1", "on_hand_qty": 450000, "qa_hold_qty": 20000, "blocked_qty": 0, "safety_stock_qty": 120000},
-    # Amoxicillin: Low stock (Stockout risk)
     {"as_of_date": START_DATE, "sku": "AMOX500_CAP", "location": "BHI_DC1", "on_hand_qty": 20000, "qa_hold_qty": 0, "blocked_qty": 0, "safety_stock_qty": 50000},
-    # Ibuprofen: Excess stock
     {"as_of_date": START_DATE, "sku": "IBUP400_TAB", "location": "BHI_DC1", "on_hand_qty": 800000, "qa_hold_qty": 0, "blocked_qty": 0, "safety_stock_qty": 60000},
-    # Vitamin C: Safety Breach risk
     {"as_of_date": START_DATE, "sku": "VITC1000_TAB", "location": "BHI_DC1", "on_hand_qty": 30000, "qa_hold_qty": 5000, "blocked_qty": 0, "safety_stock_qty": 35000},
-    # Metformin: Normal
     {"as_of_date": START_DATE, "sku": "METFOR500_TAB", "location": "BHI_DC1", "on_hand_qty": 150000, "qa_hold_qty": 0, "blocked_qty": 0, "safety_stock_qty": 40000},
 ]
 
 # Demand Plan (8 weeks)
 demand_data = []
 skus = [m["sku"] for m in master_data]
-base_demands = {
-    "PARACET500_TAB": 80000,
-    "AMOX500_CAP": 40000,   # High demand against low stock
-    "IBUP400_TAB": 20000,   # Low demand against high stock (Excess)
-    "VITC1000_TAB": 15000,
-    "METFOR500_TAB": 30000,
-}
+base_demands = {"PARACET500_TAB": 80000, "AMOX500_CAP": 40000, "IBUP400_TAB": 20000, "VITC1000_TAB": 15000, "METFOR500_TAB": 30000}
 
 for w in range(WEEKS):
     ws = START_DATE + timedelta(days=7 * w)
     for sku in skus:
         qty = base_demands[sku]
-        if w == 4 and sku == "PARACET500_TAB": qty *= 1.5  # Promo spike
-        demand_data.append({
-            "week_start": ws, "sku": sku, "location": "BHI_DC1",
-            "forecast_qty": qty, "customer_priority": "TRADE"
-        })
+        if w == 4 and sku == "PARACET500_TAB": qty *= 1.5
+        demand_data.append({"week_start": ws, "sku": sku, "location": "BHI_DC1", "forecast_qty": qty, "customer_priority": "TRADE"})
 
 # Supply Plan
 supply_data = []
-
-# Paracetamol: Steady supply
 supply_data.append({"week_start": START_DATE + timedelta(days=21), "sku": "PARACET500_TAB", "location": "BHI_DC1", "supply_qty": 100000, "supply_source": "PLANT_A", "supply_type": "PROD"})
 supply_data.append({"week_start": START_DATE + timedelta(days=42), "sku": "PARACET500_TAB", "location": "BHI_DC1", "supply_qty": 100000, "supply_source": "PLANT_A", "supply_type": "PROD"})
-
-# Amoxicillin: Supply coming too late -> Stockout
 supply_data.append({"week_start": START_DATE + timedelta(days=28), "sku": "AMOX500_CAP", "location": "BHI_DC1", "supply_qty": 150000, "supply_source": "PLANT_B", "supply_type": "PO"})
-
-# Ibuprofen: No incoming supply needed (Already excess)
-
-# Vitamin C: Incoming to fix safety breach
 supply_data.append({"week_start": START_DATE + timedelta(days=7), "sku": "VITC1000_TAB", "location": "BHI_DC1", "supply_qty": 20000, "supply_source": "PLANT_C", "supply_type": "PROD"})
-
-# Metformin: Regular
 supply_data.append({"week_start": START_DATE + timedelta(days=14), "sku": "METFOR500_TAB", "location": "BHI_DC1", "supply_qty": 50000, "supply_source": "PLANT_A", "supply_type": "PROD"})
 
-
-# Logistics Lanes (Optional)
+# Logistics Lanes
 lanes_data = [
     {"from_location": "PLANT_A", "to_location": "BHI_DC1", "mode": "ROAD", "transit_days": 2, "cost_per_unit": 0.05},
     {"from_location": "PLANT_B", "to_location": "BHI_DC1", "mode": "ROAD", "transit_days": 4, "cost_per_unit": 0.08},
 ]
 
-# Constraints / Params
+# Params
 params_data = [
     {"param_name": "horizon_weeks", "param_value": 8, "notes": "Planning Horizon"},
     {"param_name": "service_level_target", "param_value": 0.95, "notes": "Target OTIF"},
     {"param_name": "excess_weeks_threshold", "param_value": 12, "notes": "WOC > 12 = Excess"},
 ]
 
-# Calendar (Optional)
+# Calendar
 calendar_data = []
 for w in range(WEEKS):
     ws = START_DATE + timedelta(days=7 * w)
     calendar_data.append({"week_start": ws, "week_label": f"{ws.year}-W{ws.isocalendar()[1]:02d}"})
 
-# ---------------------------------------------------------
-# 2. DataFrame Construction
-# ---------------------------------------------------------
+# Help Sheet Data
+help_data = [
+    {"Section": "Overview", "Instructions": "This tool calculates Supply Chain risks (Stockouts, Revenue at Risk) based on your inputs."},
+    {"Section": "Sheet: Inventory", "Instructions": "Snapshot of stock per SKU/Location. 'as_of_date' is the snapshot date."},
+    {"Section": "Sheet: Demand_Plan", "Instructions": "Weekly forecast quantities. 'week_start' must be Mondays."},
+    {"Section": "Sheet: Supply_Plan", "Instructions": "Incoming supply/production. 'week_start' must be Mondays."},
+    {"Section": "Sheet: Master_Data", "Instructions": "Optional. Unit prices (Revenue/COGS) for economic calculations."},
+    {"Section": "Important", "Instructions": "Do not rename sheets or columns. Ensure dates are strictly YYYY-MM-DD."},
+    {"Section": "Scenarios", "Instructions": "Use the sidebar in the app to simulate Demand Uplift or Supply Delays."}
+]
+
 dfs = {
+    "Help": pd.DataFrame(help_data),
     "Master_Data": pd.DataFrame(master_data),
     "Inventory": pd.DataFrame(inventory_data),
     "Demand_Plan": pd.DataFrame(demand_data),
